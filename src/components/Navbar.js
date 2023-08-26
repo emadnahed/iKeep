@@ -1,22 +1,22 @@
-import React, {useEffect} from 'react'
-
+import React  from 'react'
+import {useNavigate} from "react-router-dom"
 import { useLocation, Link} from "react-router-dom";
-
-
-
-
 
 
 export default function Navbar() {
   
   //Use location hook to track where the existing pointer is:
   let location = useLocation();
-  useEffect(() => {
-    console.log(location.pathname) //This shows where out pointer location is presently
-  }, [location]);
+  let navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    navigate('/login')
+  }
+  
 
   return (    
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark" style={{'background-color' : '#000000'}}>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark" style={{'backgroundColor' : '#000000'}}>
   <div className="container-fluid">
     <Link className="navbar-brand " to="/">iKeep</Link>
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,8 +35,21 @@ export default function Navbar() {
       
       </ul>
       <form className="d-flex" role="search">
-        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-        <button className="btn btn-outline-success" type="submit">Search</button>
+        
+        {!localStorage.getItem('token') ? 
+        <>
+        <Link  className="btn btn-primary mx-1" to='/login' role="button">Login </Link>
+        <Link className="btn btn-primary mx-1" to='/signup' role="button">Sign up </Link>
+        </>
+        : 
+        <Link className="btn btn-primary mx-1" to='/signup' role="button" onClick={handleLogout}>Log Out </Link>
+        }
+        
+        
+        
+        
+        
+
       </form>
     </div>
   </div>

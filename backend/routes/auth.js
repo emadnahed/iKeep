@@ -72,6 +72,7 @@ router.post(
   ],
   async (req, res) => {
     // if there are errors, return bad request and the errors
+    let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -83,12 +84,14 @@ router.post(
         
         let user = await User.findOne({email})
         if(!user){
-            return res.status(400).json({error: "Please use the precise credentials"})
+            success = false;
+            return res.status(400).json({error: "Please use the precise credentials"});
         }
         
         const passwordCompare = await bcrypt.compare(password, user.password)
         if(!passwordCompare){
-            return res.status(400).json({error: "Please use the precise credentials"})
+          success = false  
+          return res.status(400).json({success, error: "Please use the precise credentials"})
         }
 
         const data = {
@@ -98,7 +101,8 @@ router.post(
           };
     
           const authToken = jwt.sign(data, JWT_SECRET);
-          res.json({ authToken });
+          success = true;
+          res.json({ success, authToken });
     
     } 
     

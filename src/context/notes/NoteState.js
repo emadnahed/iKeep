@@ -1,74 +1,104 @@
 import NoteContext from "./noteContext";
-import React, { useState } from "react";
-
-
+import React, { useState} from "react";
 
 const NoteState = (props) => {
-    const notesInitial = [
-        {
-          "_id": "64d9a36f34cc2ceaacc2c1ef",
-          "user": "64d6ca4939879f7d77e72881",
-          "title": "Jurasssic Park is amazing",
-          "description": "Welcowme to the Jurassic Park",
-          "tag": "picnic",
-          "date": "2023-08-14T03:45:51.155Z",
-          "__v": 0
-        },
-        {
-          "_id": "64db091de20f3fc9199ce754",
-          "user": "64d6ca4939879f7d77e72881",
-          "title": "Pune is amazing",
-          "description": "Welcowme to the Pune City",
-          "tag": "Tourism",
-          "date": "2023-08-15T05:11:57.985Z",
-          "__v": 0
-        },
-        {
-          "_id": "64db0933e20f3fc9199ce757",
-          "user": "64d6ca4939879f7d77e72881",
-          "title": "Vegas is amazing",
-          "description": "Welcowme to the Vegas City",
-          "tag": "Tourism",
-          "date": "2023-08-15T05:12:19.764Z",
-          "__v": 0
-        },
-        {
-          "_id": "64db0945e20f3fc9199ce759",
-          "user": "64d6ca4939879f7d77e72881",
-          "title": "Agra is amazing",
-          "description": "Welcowme to the Agra City",
-          "tag": "Tourism",
-          "date": "2023-08-15T05:12:37.042Z",
-          "__v": 0
-        },
-        {
-          "_id": "64db095ce20f3fc9199ce75b",
-          "user": "64d6ca4939879f7d77e72881",
-          "title": "Nuh is amazing",
-          "description": "Welcowme to the Nuh City",
-          "tag": "Tourism",
-          "date": "2023-08-15T05:13:00.221Z",
-          "__v": 0
-        },
-        {
-          "_id": "64db0973e20f3fc9199ce75d",
-          "user": "64d6ca4939879f7d77e72881",
-          "title": "Vienna is amazing",
-          "description": "Welcowme to the UK City",
-          "tag": "Tourism",
-          "date": "2023-08-15T05:13:23.341Z",
-          "__v": 0
-        }
-      ]
-      const [notes, setNotes] = useState(notesInitial)
+  const host = "http://localhost:5000";
+  const notesInitial = [];
+  const [notes, setNotes] = useState(notesInitial)
+  
+  // Get all notes
+  const getNotes = async () => {
+    // TODO: API call
+    const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+      method: "GET", 
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem('token')
+      },
+      
+    });
     
-    
-      return  (
-        <NoteContext.Provider value={{notes, setNotes}}>        
-        {props.children}
-        </NoteContext.Provider>        
-    )
-}
+    const json = await response.json()
+    setNotes(json);
+  };
 
 
-export default NoteState
+  
+  
+  
+  // Add a note
+  const addNote = async (title, description, tag) => {
+    // TODO: API call
+    const response = await fetch(`${host}/api/notes/addnote`, {
+      method: "POST",       
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem('token')
+      },
+      body: JSON.stringify({title, description, tag}), 
+    });
+    
+    const note = await response.json()
+    setNotes(notes.concat(note))        
+  };
+
+  // Delete a note
+
+  const deleteNote = async (id) => {
+    // API call
+    const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token":localStorage.getItem('token')
+      },    
+    });
+    
+    const json = response.json(); 
+    const newNotes = notes.filter((note) => { return note._id !== id;});
+    setNotes(newNotes);
+  };
+
+  
+  // Edit a note
+  const editNote = async (id, title, description, tag) => {
+    // API Call
+    const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
+      method: "PUT",      
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token":
+          localStorage.getItem('token'),
+      },
+      body: JSON.stringify({ title, description, tag }),
+    });
+    const json = await response.json();
+
+    let newNotes = JSON.parse(JSON.stringify(notes))
+
+    for (let index = 0; index < newNotes.length; index++) {
+      const element = newNotes[index];
+      if (element._id === id
+        // eslint-disable-next-line 
+        ) {
+          newNotes[index].title = title;
+          newNotes[index].description = description;
+          newNotes[index].tag = tag;
+          break;
+      }
+      setNotes(newNotes)
+    }
+  };
+
+  
+
+  return (
+    <NoteContext.Provider
+      value={{ notes, addNote, deleteNote, editNote, getNotes }}
+    >
+      {props.children}
+    </NoteContext.Provider>
+  );
+};
+
+export default NoteState;

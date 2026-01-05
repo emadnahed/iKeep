@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-const JWT_SECRET = "AL-ZAIDI2MANAMA4BAHRAIN@T#7763";
+const JWT_SECRET = process.env.JWT_SECRET || "AL-ZAIDI2MANAMA4BAHRAIN@T#7763";
 var jwt = require("jsonwebtoken");
 var fetchuser = require('../middleware/fetchuser');
 
@@ -16,7 +16,7 @@ router.post(
     body("password", "invalid credentials").isAlphanumeric(),
   ],
   async (req, res) => {
-    
+
     // if there are errors, return bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -53,7 +53,7 @@ router.post(
       const authToken = jwt.sign(data, JWT_SECRET);
       res.json({ authToken });
 
-    } 
+    }
     catch (error) {
       console.error(error.message);
       res.status(500).send("Internal server error occurred");
@@ -81,56 +81,56 @@ router.post(
     const { email, password } = req.body;
 
     try {
-        
-        let user = await User.findOne({email})
-        if(!user){
-            success = false;
-            return res.status(400).json({error: "Please use the precise credentials"});
-        }
-        
-        const passwordCompare = await bcrypt.compare(password, user.password)
-        if(!passwordCompare){
-          success = false  
-          return res.status(400).json({success, error: "Please use the precise credentials"})
-        }
 
-        const data = {
-            user: {
-              id: user.id,
-            },
-          };
-    
-          const authToken = jwt.sign(data, JWT_SECRET);
-          success = true;
-          res.json({ success, authToken });
-    
-    } 
-    
+      let user = await User.findOne({ email })
+      if (!user) {
+        success = false;
+        return res.status(400).json({ error: "Please use the precise credentials" });
+      }
+
+      const passwordCompare = await bcrypt.compare(password, user.password)
+      if (!passwordCompare) {
+        success = false
+        return res.status(400).json({ success, error: "Please use the precise credentials" })
+      }
+
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+
+      const authToken = jwt.sign(data, JWT_SECRET);
+      success = true;
+      res.json({ success, authToken });
+
+    }
+
     catch (error) {
-        console.error(error.message);
-        res.status(500).send("Internal server error occurred");
+      console.error(error.message);
+      res.status(500).send("Internal server error occurred");
     }
   }
 
-  
-  
+
+
 );
 // ROUTE-1 Get logged in user details using: POST "/api/auth/getuser *login required"
 router.post(
-    "/getuser", fetchuser, async (req, res) => {
-        
-        try {
-            userID = req.user.id;
-            const user = await User.findById(userID).select("-password")
-            res.send({user})
-            
-        } 
-        
-        catch (error) {
-            console.error(error.message);
-            res.status(500).send("Internal server error occurred");
-        }
+  "/getuser", fetchuser, async (req, res) => {
 
-    }) 
+    try {
+      userID = req.user.id;
+      const user = await User.findById(userID).select("-password")
+      res.send({ user })
+
+    }
+
+    catch (error) {
+      console.error(error.message);
+      res.status(500).send("Internal server error occurred");
+    }
+
+  })
 
 module.exports = router;

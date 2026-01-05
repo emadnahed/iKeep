@@ -1,25 +1,11 @@
-const connectToMongo = require('./db.js')
+const connectToMongo = require('./db.js');
+const app = require('./app');
+const os = require('os');
 
-const express = require('express')
-const app = express()
-const port = 5000
-var cors = require('cors')
-
-
-app.use(cors())
-
-app.use(express.json())
-
-// app.get('/', (req, res) => {
-//   res.send(`Hello world`) 
-// })
-
-// Available routes
-app.use("/api/auth", require('./routes/auth'))
-app.use("/api/notes", require('./routes/notes'))
-
-app.listen(port, () => {
-  console.log(`iKeep backend listening on port ${port}`)
-})
+const port = process.env.PORT || 5000;
 
 connectToMongo();
+
+app.listen(port, () => {
+  console.log(`iKeep backend listening on port ${port} at host ${os.hostname()}`);
+});

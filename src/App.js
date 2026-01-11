@@ -8,6 +8,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Alert from "./components/Alert";
+import Footer from "./components/Footer"; // Import the Footer component
 import {
   BrowserRouter as Router,
   Routes as Switch,
@@ -55,6 +56,7 @@ function App() {
               <Route exact path="/Signup" element={<Signup showAlert={showAlert} />} />
             </Switch>
           </div>
+          <Footer />
         </Router>
 
       </NoteState>

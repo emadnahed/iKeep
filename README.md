@@ -1,44 +1,104 @@
 # iKeep
 
-iKeep is a full-stack MERN application that allows users to create, read, update, and delete notes.
+iKeep is a full-stack MERN application that allows users to create, read, update, and delete notes. Designed for **horizontal scalability** and **high concurrent load handling**.
+
+## 🏗️ Architecture
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────────────────┐
+│   Browser   │────▶│  Nginx LB   │────▶│  Backend (N replicas)   │
+│             │     │  :8080      │     │  :5000                  │
+└─────────────┘     └─────────────┘     └───────────┬─────────────┘
+                           │                        │
+                           ▼                        ▼
+                    ┌─────────────┐          ┌─────────────┐
+                    │  Frontend   │          │   MongoDB   │
+                    │  :80        │          │   :27017    │
+                    └─────────────┘          └─────────────┘
+                                                    │
+                                             ┌──────┴──────┐
+                                             │    Redis    │
+                                             │    :6379    │
+                                             └─────────────┘
+```
 
 ## Project Structure
 
-The project is divided into two main parts:
+-   `src/`: React frontend application
+-   `backend/`: Node.js Express API
+-   `nginx.conf`: Load balancer configuration
+-   `docker-compose.yml`: Container orchestration
 
--   `frontend`: A React application located in the `src` directory.
--   `backend`: A Node.js application located in the `backend` directory.
+## 🚀 Running the Application
 
-## Running the application
-
-The application is fully containerized using Docker. To run the application, you need to have Docker and Docker Compose installed.
-
-### Development
-
-To run the application in development mode, use the following command:
+### Quick Start (3 backend replicas)
 
 ```bash
-docker-compose up -d
+docker-compose up -d --scale backend=3
 ```
 
 The application will be available at `http://localhost:8080`.
 
-The frontend is served on port 3000, and the backend is served on port 5000. The `nginx-lb` service on port 8080 acts as a reverse proxy to route requests to the appropriate service.
+### Scale Up/Down
 
-### Verification
+```bash
+# Scale to 5 backend replicas
+docker-compose up -d --scale backend=5
 
-To verify that the application is running correctly, you can use the `verify.sh` script:
+# Scale back to 1
+docker-compose up -d --scale backend=1
+```
+
+### Check Service Status
+
+```bash
+docker-compose ps
+```
+
+## 🧪 Testing
+
+### Verification Script
 
 ```bash
 ./verify.sh
 ```
 
-This script will create a user, log in, add a note, and fetch the notes.
+Creates a test user, logs in, and performs CRUD operations on notes.
 
-### Stopping the application
+### Load Testing
 
-To stop the application, use the following command:
+```bash
+./loadtest.sh
+```
+
+Runs load tests including:
+- Distribution check across backends
+- Light/Medium/Heavy load tests (100-1000 requests)
+- Rate limit verification
+
+For better results, install `hey`: `brew install hey`
+
+## 🔧 Scalability Features
+
+| Feature | Description |
+|---------|-------------|
+| **Load Balancing** | Nginx with least_conn algorithm |
+| **Rate Limiting** | 100 requests/second per IP |
+| **Connection Pooling** | MongoDB (50 max), Redis-backed state |
+| **Health Checks** | All services with auto-restart |
+| **Graceful Shutdown** | Clean connection draining |
+| **Stateless Backend** | JWT authentication, horizontal scaling ready |
+
+## 📊 Health Endpoints
+
+- `GET /api/health` - Basic health check
+- `GET /api/health/detailed` - Detailed status with DB/Redis info
+
+## 🛑 Stopping the Application
 
 ```bash
 docker-compose down
+
+# Remove volumes (clears data)
+docker-compose down -v
 ```

@@ -353,8 +353,9 @@ describe('Auth Routes', () => {
                     password: 'password123',
                 });
 
-            // Should either accept or reject consistently
-            expect([200, 400]).toContain(res.statusCode);
+            // Long emails should be accepted if valid format
+            expect(res.statusCode).toBe(200);
+            expect(res.body).toHaveProperty('authToken');
         });
 
         it('should handle concurrent registration attempts', async () => {

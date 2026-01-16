@@ -82,7 +82,12 @@ router.put("/updatenote/:id", fetchuser, async (req, res) => {
       note = await Note.findByIdAndUpdate(req.params.id, {$set: newNote}, {new:true})
       res.json({note})
   } catch (error) {
-      console.error(error);
+      // Log full error in development, just message in production
+      if (process.env.NODE_ENV === 'development') {
+          console.error(error);
+      } else {
+          console.error(error.message);
+      }
       if (error.name === 'CastError') {
           return res.status(400).send("Invalid note ID format");
       }
@@ -108,7 +113,12 @@ router.delete("/deletenote/:id", fetchuser, async (req, res) => {
       note = await Note.findByIdAndDelete(req.params.id)
       res.json({"Success": "Note has been deleted",note: note})
   } catch (error) {
-      console.error(error);
+      // Log full error in development, just message in production
+      if (process.env.NODE_ENV === 'development') {
+          console.error(error);
+      } else {
+          console.error(error.message);
+      }
       if (error.name === 'CastError') {
           return res.status(400).send("Invalid note ID format");
       }

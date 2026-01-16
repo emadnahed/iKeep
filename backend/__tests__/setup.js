@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const testDbUri = process.env.MONGO_URI || 'mongodb://mongo:27017/ikeeper_test';
 
 beforeAll(async () => {
-    process.env.JWT_SECRET = 'test-secret-key';
+    // Use TEST_JWT_SECRET from environment, falling back to a test-only default
+    process.env.JWT_SECRET = process.env.TEST_JWT_SECRET || 'test-secret-key-for-ci';
     await mongoose.connect(testDbUri);
 });
 

@@ -1,5 +1,5 @@
 const { connectToMongo, closeConnection: closeDb } = require('./db.js');
-const { closeConnection: closeRedis } = require('./middleware/rateLimit');
+const { closeConnection: closeRedis, initializeRateLimiter } = require('./middleware/rateLimit');
 const app = require('./app');
 const os = require('os');
 
@@ -71,6 +71,9 @@ const startServer = async () => {
   try {
     // Connect to MongoDB first
     await connectToMongo();
+
+    // Initialize rate limiter (Redis or memory fallback)
+    await initializeRateLimiter();
 
     // Start HTTP server
     server = app.listen(port, () => {

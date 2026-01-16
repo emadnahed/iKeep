@@ -51,10 +51,10 @@ const Signup = (props) => {
       const json = await response.json();
       console.log(json);
 
-      if (json.success !== false) {
-        localStorage.setItem("token", json.authtoken);
+      if (json.authToken) {
+        localStorage.setItem("token", json.authToken);
         showAlert("Account created successfully!", "success");
-        history("/Login");
+        history("/");
       } else {
         showAlert(json.error || "Signup failed", "danger");
       }

@@ -83,7 +83,7 @@ For better results, install `hey`: `brew install hey`
 | Feature | Description |
 |---------|-------------|
 | **Load Balancing** | Nginx with least_conn algorithm |
-| **Rate Limiting** | 100 requests/second per IP |
+| **Rate Limiting** | 100 requests/minute per IP (application-level) |
 | **Connection Pooling** | MongoDB (50 max), Redis-backed state |
 | **Health Checks** | All services with auto-restart |
 | **Graceful Shutdown** | Clean connection draining |

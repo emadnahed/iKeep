@@ -1,19 +1,27 @@
 const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
-// For testing, use the test database
-const testDbUri = process.env.MONGO_URI || 'mongodb://mongo:27017/ikeeper_test';
+let mongoServer;
 
 beforeAll(async () => {
-    // Use TEST_JWT_SECRET from environment, falling back to a test-only default
-    process.env.JWT_SECRET = process.env.TEST_JWT_SECRET || 'test-secret-key-for-ci';
-    await mongoose.connect(testDbUri);
+    // Create an in-memory MongoDB instance for testing
+    mongoServer = await MongoMemoryServer.create();
+    const mongoUri = mongoServer.getUri();
+
+    await mongoose.connect(mongoUri);
+    console.log('✅ Connected to in-memory MongoDB for testing');
 });
 
 afterAll(async () => {
     await mongoose.disconnect();
+    if (mongoServer) {
+        await mongoServer.stop();
+    }
+    console.log('✅ Disconnected from in-memory MongoDB');
 });
 
 afterEach(async () => {
+    // Clear all collections after each test
     const collections = mongoose.connection.collections;
     for (const key in collections) {
         await collections[key].deleteMany({});

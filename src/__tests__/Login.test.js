@@ -32,17 +32,17 @@ describe('Login Component', () => {
     it('renders login form correctly', () => {
         renderLogin();
 
-        expect(screen.getByText('Login to continue to iKeep')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Enter email')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
+        expect(screen.getByText('Welcome back')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter your email')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter your password')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
     });
 
     it('updates email and password inputs on change', () => {
         renderLogin();
 
-        const emailInput = screen.getByPlaceholderText('Enter email');
-        const passwordInput = screen.getByPlaceholderText('Password');
+        const emailInput = screen.getByPlaceholderText('Enter your email');
+        const passwordInput = screen.getByPlaceholderText('Enter your password');
 
         fireEvent.change(emailInput, { target: { value: 'test@example.com', name: 'email' } });
         fireEvent.change(passwordInput, { target: { value: 'password123', name: 'password' } });
@@ -58,13 +58,13 @@ describe('Login Component', () => {
 
         renderLogin();
 
-        fireEvent.change(screen.getByPlaceholderText('Enter email'), {
+        fireEvent.change(screen.getByPlaceholderText('Enter your email'), {
             target: { value: 'test@example.com', name: 'email' }
         });
-        fireEvent.change(screen.getByPlaceholderText('Password'), {
+        fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
             target: { value: 'password123', name: 'password' }
         });
-        fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+        fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
         await waitFor(() => {
             expect(fetch).toHaveBeenCalledWith(
@@ -90,17 +90,77 @@ describe('Login Component', () => {
 
         renderLogin();
 
-        fireEvent.change(screen.getByPlaceholderText('Enter email'), {
+        fireEvent.change(screen.getByPlaceholderText('Enter your email'), {
             target: { value: 'wrong@example.com', name: 'email' }
         });
-        fireEvent.change(screen.getByPlaceholderText('Password'), {
+        fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
             target: { value: 'wrongpass', name: 'password' }
         });
-        fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+        fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
         await waitFor(() => {
             expect(mockShowAlert).toHaveBeenCalledWith('Invalid credentials', 'danger');
             expect(mockNavigate).not.toHaveBeenCalled();
+        });
+    });
+
+    it('disables submit button when fields are empty', () => {
+        renderLogin();
+
+        const submitButton = screen.getByRole('button', { name: /sign in/i });
+        expect(submitButton).toBeDisabled();
+    });
+
+    it('enables submit button when fields are filled', () => {
+        renderLogin();
+
+        fireEvent.change(screen.getByPlaceholderText('Enter your email'), {
+            target: { value: 'test@example.com', name: 'email' }
+        });
+        fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+            target: { value: 'password123', name: 'password' }
+        });
+
+        const submitButton = screen.getByRole('button', { name: /sign in/i });
+        expect(submitButton).not.toBeDisabled();
+    });
+
+    it('shows iKeep branding', () => {
+        renderLogin();
+
+        expect(screen.getByText('iKeep')).toBeInTheDocument();
+    });
+
+    it('has link to signup page', () => {
+        renderLogin();
+
+        const signupLink = screen.getByText('Create one');
+        expect(signupLink).toBeInTheDocument();
+        expect(signupLink.closest('a')).toHaveAttribute('href', '/Signup');
+    });
+
+    it('has link back to welcome page', () => {
+        renderLogin();
+
+        const backLink = screen.getByText('Back to home');
+        expect(backLink).toBeInTheDocument();
+    });
+
+    it('handles network error gracefully', async () => {
+        fetch.mockRejectedValueOnce(new Error('Network error'));
+
+        renderLogin();
+
+        fireEvent.change(screen.getByPlaceholderText('Enter your email'), {
+            target: { value: 'test@example.com', name: 'email' }
+        });
+        fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+            target: { value: 'password123', name: 'password' }
+        });
+        fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+        await waitFor(() => {
+            expect(mockShowAlert).toHaveBeenCalledWith('Something went wrong', 'danger');
         });
     });
 });

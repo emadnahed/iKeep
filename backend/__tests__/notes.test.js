@@ -451,9 +451,9 @@ describe('Notes Routes', () => {
                 .set('auth-token', authToken)
                 .send({ title: 'Test' });
 
-            // Should return error status for invalid ID (400, 404, or 500)
-            expect([400, 404, 500]).toContain(res.statusCode);
-        }, 10000); // 10 second timeout for this edge case
+            // CastError is caught and returns 400
+            expect(res.statusCode).toBe(400);
+        });
 
         it('should handle very long title and description', async () => {
             const longTitle = 'A'.repeat(1000);

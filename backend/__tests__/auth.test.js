@@ -120,13 +120,16 @@ describe('Auth Routes', () => {
             expect(res.statusCode).toBe(400);
         });
 
-        it('should reject non-alphanumeric passwords', async () => {
+        // NOTE: This test documents current behavior. The isAlphanumeric validation
+        // is overly restrictive and should be replaced with minimum length + complexity
+        // rules in a future security improvement.
+        it('should reject non-alphanumeric passwords (current policy - consider improving)', async () => {
             const res = await request(app)
                 .post('/api/auth/createuser')
                 .send({
                     name: 'Special User',
                     email: 'special@example.com',
-                    password: 'pass@word!', // Non-alphanumeric
+                    password: 'pass@word!', // Non-alphanumeric - rejected by current policy
                 });
 
             expect(res.statusCode).toBe(400);
@@ -239,16 +242,13 @@ describe('Auth Routes', () => {
             expect(wrongPassword.body).toHaveProperty('error');
         });
 
-        it('should generate different tokens for different logins', async () => {
+        it('should generate valid tokens on multiple logins', async () => {
             const res1 = await request(app)
                 .post('/api/auth/login')
                 .send({
                     email: 'login@example.com',
                     password: 'password123',
                 });
-
-            // Wait a bit for different timestamp
-            await new Promise(resolve => setTimeout(resolve, 100));
 
             const res2 = await request(app)
                 .post('/api/auth/login')
@@ -257,9 +257,13 @@ describe('Auth Routes', () => {
                     password: 'password123',
                 });
 
-            // Note: JWT tokens might be the same if they don't include timestamp
             expect(res1.statusCode).toBe(200);
             expect(res2.statusCode).toBe(200);
+            expect(res1.body.authToken).toBeDefined();
+            expect(res2.body.authToken).toBeDefined();
+            // Both tokens should be valid JWT format
+            expect(res1.body.authToken.split('.').length).toBe(3);
+            expect(res2.body.authToken.split('.').length).toBe(3);
         });
     });
 

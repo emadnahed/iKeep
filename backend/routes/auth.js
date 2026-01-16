@@ -3,12 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-  console.error('❌ FATAL: JWT_SECRET environment variable is required');
-  process.exit(1);
-}
+const { JWT_SECRET } = require("../config");
 var jwt = require("jsonwebtoken");
 var fetchuser = require('../middleware/fetchuser');
 

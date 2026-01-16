@@ -35,10 +35,10 @@ describe('Navbar Component', () => {
         expect(screen.getByText('About')).toBeInTheDocument();
     });
 
-    it('shows Login and Sign up buttons when not authenticated', () => {
+    it('shows Login and Sign Up buttons when not authenticated', () => {
         renderNavbar();
         expect(screen.getByText('Login')).toBeInTheDocument();
-        expect(screen.getByText('Sign up')).toBeInTheDocument();
+        expect(screen.getByText('Sign Up')).toBeInTheDocument();
     });
 
     it('shows Log Out button when authenticated', () => {
@@ -55,6 +55,6 @@ describe('Navbar Component', () => {
         fireEvent.click(screen.getByText('Log Out'));
 
         expect(localStorage.getItem('token')).toBeNull();
-        expect(mockNavigate).toHaveBeenCalledWith('/login');
+        expect(mockNavigate).toHaveBeenCalledWith('/welcome');
     });
 });

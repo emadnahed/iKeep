@@ -11,8 +11,32 @@ const app = express();
 // Trust proxy for accurate IP detection behind Nginx
 app.set('trust proxy', true);
 
+// CORS configuration
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, curl, etc.)
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        const allowedOrigins = process.env.CORS_ORIGIN
+            ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
+            : ['http://localhost:3000', 'http://localhost:8080'];
+
+        if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'auth-token', 'Authorization'],
+    maxAge: 86400 // 24 hours - preflight cache
+};
+
 // Middleware stack
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(compression()); // Compress responses
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));

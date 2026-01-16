@@ -1,58 +1,94 @@
-import React  from 'react'
-import {useNavigate} from "react-router-dom"
-import { useLocation, Link} from "react-router-dom";
-
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import './Navbar.css';
 
 export default function Navbar() {
-  
-  //Use location hook to track where the existing pointer is:
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   let location = useLocation();
-  let navigate = useNavigate()
+  let navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    navigate('/login')
-  }
-  
+    localStorage.removeItem('token');
+    navigate('/welcome');
+  };
 
-  return (    
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark" style={{'backgroundColor' : '#000000'}}>
-  <div className="container-fluid">
-    <Link className="navbar-brand " to="/">iKeep</Link>
-    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"></span>
-    </button>
-    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-        <li className="nav-item">
-          <Link className={`nav-link ${location.pathname === "/" ? "active": ""}`} aria-current="page" to="/">Home</Link>
-        </li>
-        <li className="nav-item">
-          <Link className={`nav-link ${location.pathname === "/about" ? "active": ""}`} to="/about">About</Link>
-        </li>
-        
-         
-      
-      </ul>
-      <form className="d-flex" role="search">
-        
-        {!localStorage.getItem('token') ? 
-        <>
-        <Link  className="btn btn-primary mx-1" to='/login' role="button">Login </Link>
-        <Link className="btn btn-primary mx-1" to='/signup' role="button">Sign up </Link>
-        </>
-        : 
-        <Link className="btn btn-primary mx-1" to='/signup' role="button" onClick={handleLogout}>Log Out </Link>
-        }
-        
-        
-        
-        
-        
+  // Close menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
 
-      </form>
-    </div>
-  </div>
-</nav>
-  )
+  // Add body class for navbar padding (always add since navbar is always visible)
+  useEffect(() => {
+    document.body.classList.add('has-navbar');
+    return () => document.body.classList.remove('has-navbar');
+  }, []);
+
+  const isLoggedIn = localStorage.getItem('token');
+
+  return (
+    <nav className="navbar-premium">
+      <div className="navbar-inner">
+        {/* Brand */}
+        <Link to="/" className="navbar-brand-premium">
+          <i className="fas fa-sticky-note"></i>
+          <span>iKeep</span>
+        </Link>
+
+        {/* Mobile Toggle */}
+        <button
+          className="navbar-toggle"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        {/* Menu */}
+        <div className={`navbar-menu ${isMenuOpen ? 'open' : ''}`}>
+          {/* Navigation Links */}
+          <ul className="navbar-nav-premium">
+            <li>
+              <Link
+                to="/"
+                className={`nav-link-premium ${location.pathname === "/" ? "active" : ""}`}
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/about"
+                className={`nav-link-premium ${location.pathname === "/about" ? "active" : ""}`}
+              >
+                About
+              </Link>
+            </li>
+          </ul>
+
+          {/* Action Buttons */}
+          <div className="navbar-actions">
+            {!isLoggedIn ? (
+              <>
+                <Link to="/Login" className="btn-navbar-ghost">
+                  Login
+                </Link>
+                <Link to="/Signup" className="btn-navbar-primary">
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <button
+                className="btn-navbar-primary"
+                onClick={handleLogout}
+              >
+                Log Out
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
 }

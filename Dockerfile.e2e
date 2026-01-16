@@ -1,0 +1,9 @@
+FROM cypress/included:13.6.2
+
+WORKDIR /app
+
+COPY package*.json ./
+COPY cypress.config.js ./
+COPY cypress ./cypress
+
+CMD ["cypress", "run"]

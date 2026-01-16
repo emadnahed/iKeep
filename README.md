@@ -1,70 +1,104 @@
-# Getting Started with Create React App
+# iKeep
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+iKeep is a full-stack MERN application that allows users to create, read, update, and delete notes. Designed for **horizontal scalability** and **high concurrent load handling**.
 
-## Available Scripts
+## 🏗️ Architecture
 
-In the project directory, you can run:
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────────────────┐
+│   Browser   │────▶│  Nginx LB   │────▶│  Backend (N replicas)   │
+│             │     │  :8080      │     │  :5000                  │
+└─────────────┘     └─────────────┘     └───────────┬─────────────┘
+                           │                        │
+                           ▼                        ▼
+                    ┌─────────────┐          ┌─────────────┐
+                    │  Frontend   │          │   MongoDB   │
+                    │  :80        │          │   :27017    │
+                    └─────────────┘          └─────────────┘
+                                                    │
+                                             ┌──────┴──────┐
+                                             │    Redis    │
+                                             │    :6379    │
+                                             └─────────────┘
+```
 
-### `npm start`
+## Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+-   `src/`: React frontend application
+-   `backend/`: Node.js Express API
+-   `nginx.conf`: Load balancer configuration
+-   `docker-compose.yml`: Container orchestration
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Running the Application
 
-### `npm test`
+### Quick Start (3 backend replicas)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+docker-compose up -d --scale backend=3
+```
 
-### `npm run build`
+The application will be available at `http://localhost:8080`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Scale Up/Down
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+# Scale to 5 backend replicas
+docker-compose up -d --scale backend=5
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Scale back to 1
+docker-compose up -d --scale backend=1
+```
 
-### `npm run eject`
+### Check Service Status
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+docker-compose ps
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🧪 Testing
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Verification Script
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+./verify.sh
+```
 
-## Learn More
+Creates a test user, logs in, and performs CRUD operations on notes.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Load Testing
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+./loadtest.sh
+```
 
-### Code Splitting
+Runs load tests including:
+- Distribution check across backends
+- Light/Medium/Heavy load tests (100-1000 requests)
+- Rate limit verification
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+For better results, install `hey`: `brew install hey`
 
-### Analyzing the Bundle Size
+## 🔧 Scalability Features
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+| Feature | Description |
+|---------|-------------|
+| **Load Balancing** | Nginx with least_conn algorithm |
+| **Rate Limiting** | 100 requests/minute per IP (application-level) |
+| **Connection Pooling** | MongoDB (50 max), Redis-backed state |
+| **Health Checks** | All services with auto-restart |
+| **Graceful Shutdown** | Clean connection draining |
+| **Stateless Backend** | JWT authentication, horizontal scaling ready |
 
-### Making a Progressive Web App
+## 📊 Health Endpoints
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- `GET /api/health` - Basic health check
+- `GET /api/health/detailed` - Detailed status with DB/Redis info
 
-### Advanced Configuration
+## 🛑 Stopping the Application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```bash
+docker-compose down
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Remove volumes (clears data)
+docker-compose down -v
+```

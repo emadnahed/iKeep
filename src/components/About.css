@@ -1,0 +1,642 @@
+/* =========================================
+   iKeep About Page Styles
+   Premium Design - Homepage Inspired Layout
+   ========================================= */
+
+/* About Page Container - Scroll Snap like Welcome */
+.about-container {
+  height: 100vh;
+  background: #0a0a0f;
+  color: #ffffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  position: relative;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+/* =========================================
+   Animated Background
+   ========================================= */
+.about-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.about-bg-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 60%);
+}
+
+.about-bg-orbs {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.about-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  animation: aboutOrbFloat 20s ease-in-out infinite;
+}
+
+.about-orb-1 {
+  width: min(600px, 80vw);
+  height: min(600px, 80vw);
+  background: #8b5cf6;
+  top: -200px;
+  left: -200px;
+}
+
+.about-orb-2 {
+  width: min(500px, 70vw);
+  height: min(500px, 70vw);
+  background: #3b82f6;
+  bottom: -150px;
+  right: -150px;
+  animation-delay: -7s;
+}
+
+.about-orb-3 {
+  width: min(400px, 60vw);
+  height: min(400px, 60vw);
+  background: #06b6d4;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: -14s;
+}
+
+@keyframes aboutOrbFloat {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+}
+
+/* =========================================
+   Hero Header Section - Full Viewport
+   ========================================= */
+.about-header {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 8% 80px;
+  scroll-snap-align: start;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.about-header h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.about-header p {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 40px;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #06b6d4 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+  color: white;
+}
+
+.cta-button i {
+  transition: transform 0.3s ease;
+}
+
+.cta-button:hover i {
+  transform: translateX(4px);
+}
+
+/* =========================================
+   Main Content Container
+   ========================================= */
+.about-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  /* Remove gaps since sections handle their own spacing */
+}
+
+/* =========================================
+   Section Base - Full Viewport Sections
+   ========================================= */
+.about-section {
+  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 8%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  animation: fadeInUp 0.6s ease-out backwards;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.about-section h2 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+
+.section-subtitle {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 60px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   What is iKeep - Intro Section
+   ========================================= */
+.intro-section {
+  text-align: center;
+}
+
+.intro-section h2 {
+  margin-bottom: 24px;
+}
+
+.intro-section>p {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* =========================================
+   Values Grid - Feature Cards
+   ========================================= */
+.values-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.value-item {
+  flex: 1 1 280px;
+  max-width: 350px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 32px;
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.value-item:hover {
+  transform: translateY(-8px);
+  border-color: #8b5cf6;
+  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+}
+
+.value-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #06b6d4 100%);
+  border-radius: 14px;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.value-item i {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  display: block;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.value-item h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.value-item p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+/* =========================================
+   Why Choose Us - Feature Cards
+   ========================================= */
+.why-choose-us-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.why-choose-us-item {
+  flex: 1 1 280px;
+  max-width: 350px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 32px;
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.why-choose-us-item:hover {
+  transform: translateY(-8px);
+  border-color: #8b5cf6;
+  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+}
+
+.why-choose-us-item i {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  display: block;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.why-choose-us-item h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.why-choose-us-item p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+/* =========================================
+   Testimonials Section - CTA Style
+   ========================================= */
+.testimonials-section {
+  text-align: center;
+}
+
+.testimonials-section h2 {
+  margin-bottom: 60px;
+}
+
+.testimonials-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.testimonial-item {
+  flex: 1 1 400px;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 40px;
+  backdrop-filter: blur(20px);
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.testimonial-item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 16px 40px rgba(139, 92, 246, 0.15);
+}
+
+.testimonial-item p {
+  font-size: 1.1rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.testimonial-item span {
+  display: block;
+  text-align: right;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* =========================================
+   Team Section
+   ========================================= */
+.team-section h2 {
+  margin-bottom: 60px;
+}
+
+.team-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.team-member {
+  flex: 1 1 220px;
+  max-width: 260px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 40px 24px;
+  text-align: center;
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-8px);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+}
+
+.team-member img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(#0a0a0f, #0a0a0f) padding-box,
+    linear-gradient(135deg, #8b5cf6, #3b82f6, #06b6d4) border-box;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+}
+
+.team-member h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.team-member p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+/* =========================================
+   Responsive - Tablet
+   ========================================= */
+@media (max-width: 1024px) {
+  .about-header {
+    padding: 100px 6% 60px;
+  }
+
+  .about-section {
+    padding: 60px 6%;
+  }
+
+  .value-item,
+  .why-choose-us-item {
+    flex: 1 1 calc(50% - 12px);
+    max-width: calc(50% - 12px);
+  }
+}
+
+/* =========================================
+   Responsive - Small Tablet
+   ========================================= */
+@media (max-width: 768px) {
+  .about-header {
+    padding: 90px 5% 50px;
+  }
+
+  .about-header h1 {
+    font-size: 2rem;
+  }
+
+  .about-header p {
+    font-size: 1.1rem;
+    margin-bottom: 32px;
+  }
+
+  .about-section {
+    padding: 50px 5%;
+  }
+
+  .about-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+
+  .section-subtitle {
+    margin-bottom: 40px;
+  }
+
+  .values-grid,
+  .why-choose-us-grid {
+    gap: 16px;
+  }
+
+  .value-item,
+  .why-choose-us-item {
+    flex: 1 1 100%;
+    max-width: 100%;
+    padding: 24px;
+  }
+
+  .testimonials-grid {
+    gap: 20px;
+  }
+
+  .testimonial-item {
+    flex: 1 1 100%;
+    max-width: 100%;
+    padding: 28px;
+  }
+
+  .team-grid {
+    gap: 20px;
+  }
+
+  .team-member {
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+    padding: 28px 16px;
+  }
+}
+
+/* =========================================
+   Responsive - Mobile
+   ========================================= */
+@media (max-width: 480px) {
+  .about-header {
+    padding: 80px 4% 40px;
+  }
+
+  .about-header h1 {
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+
+  .about-header p {
+    font-size: 1rem;
+  }
+
+  .about-section {
+    padding: 50px 4%;
+  }
+
+  .about-section h2 {
+    font-size: 1.35rem;
+  }
+
+  .cta-button {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px;
+  }
+
+  .value-item,
+  .why-choose-us-item {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .value-item i,
+  .why-choose-us-item i {
+    font-size: 1.75rem;
+    margin-bottom: 16px;
+  }
+
+  .value-item h3,
+  .why-choose-us-item h3 {
+    font-size: 1.1rem;
+  }
+
+  .value-item p,
+  .why-choose-us-item p {
+    font-size: 14px;
+  }
+
+  .testimonial-item {
+    padding: 24px 20px;
+  }
+
+  .testimonial-item p {
+    font-size: 1rem;
+  }
+
+  .team-member {
+    flex: 1 1 calc(50% - 8px);
+    max-width: calc(50% - 8px);
+    padding: 20px 12px;
+    border-radius: 16px;
+  }
+
+  .team-member img {
+    width: 72px;
+    height: 72px;
+  }
+
+  .team-member h3 {
+    font-size: 1rem;
+  }
+
+  .team-member p {
+    font-size: 0.8rem;
+  }
+}

@@ -6,8 +6,7 @@ const NotesSchema = new Schema({
 
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        index: true
+        ref: 'user'
     },
 
     title: {
@@ -21,13 +20,11 @@ const NotesSchema = new Schema({
     },
     tag: {
         type: String,
-        default: "General",
-        index: true
+        default: "General"
     },
     date: {
         type: Date,
-        default: Date.now,
-        index: true
+        default: Date.now
     }
 });
 
